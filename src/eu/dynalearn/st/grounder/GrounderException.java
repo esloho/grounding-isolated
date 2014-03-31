@@ -2,6 +2,11 @@ package eu.dynalearn.st.grounder;
 
 
 public class GrounderException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public GrounderException() {
 		super();
 	}

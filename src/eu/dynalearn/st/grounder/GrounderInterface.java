@@ -3,7 +3,6 @@ package eu.dynalearn.st.grounder;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
-import java.util.Vector;
 
 public interface GrounderInterface {
 	String getLanguage();

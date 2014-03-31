@@ -1,11 +1,8 @@
 package eu.dynalearn.st.context;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-import eu.dynalearn.model.GroundingTerm;
 import eu.dynalearn.st.grounder.GroundingRelevance;
-import eu.dynalearn.util.Pair;
 
 public class InhouseRanking {
 	

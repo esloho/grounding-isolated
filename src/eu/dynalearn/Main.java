@@ -1,17 +1,9 @@
 package eu.dynalearn;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.store.LockObtainFailedException;
-
 import eu.dynalearn.st.grounder.EnglishGrounder;
-import eu.dynalearn.st.grounder.GrounderException;
-import eu.dynalearn.st.grounder.GroundingRelevance;
-import eu.dynalearn.st.grounder.GroundingResults;
 
 public class Main
 {
@@ -28,8 +20,9 @@ public class Main
 //		getGroundings(term);		
 		
 		List<String> context = new ArrayList<String>();
-		context.add("polo");
-		getFirstGrounding(term, context);  //--> Comprobar que funciona con las descripciones...
+		context.add("sport");
+//		getFirstGrounding(term, context);  //--> Comprobar que funciona con las descripciones...
+		getGroundings(term, context);
 	}
 
 	public static void getFirstGrounding(String term)

@@ -20,7 +20,6 @@ import org.apache.lucene.store.LockObtainFailedException;
 
 import eu.dynalearn.model.GroundingTerm;
 import eu.dynalearn.st.grounder.GroundingRelevance.GroundingRelevanceComparator;
-import eu.dynalearn.st.config.Configuration;
 import eu.dynalearn.st.context.InhouseRanking;
 import eu.dynalearn.st.context.LuceneRanking;
 import eu.dynalearn.st.dbpedia.DBpedia;
@@ -442,14 +441,24 @@ public class EnglishGrounder extends Grounder
 		
 		if (context != null && !context.isEmpty() )
 		{
-			Collection<GroundingResults> groundingResults = new ArrayList<GroundingResults>();
-			groundingResults.add(results);
+//			Collection<GroundingResults> groundingResults = new ArrayList<GroundingResults>();
+//			groundingResults.add(results);
 			
-			Collection<GroundingResults> resRanked = this.doRanking(context, groundingResults);
+//			Collection<GroundingResults> resRanked = this.doRanking(context, groundingResults);
 			
-			for (GroundingResults groundingResults2 : resRanked) {
-				results = groundingResults2;
-			}		
+//			for (GroundingResults groundingResults2 : resRanked) {
+//				results = groundingResults2;
+//			}
+			
+			final Set<String> contextSet = new HashSet<String>();
+			
+			for (String term:context) 
+			{
+				contextSet.add(term);
+			}
+			
+			final String contextString = StringTools.implode(contextSet.toArray(new String[0]),", ");
+			results.setEvaluatedGroundings(doRanking(results, contextString));
 		}
 		else
 			results.setEvaluatedGroundings(this.doRanking(results,label));
@@ -503,17 +512,27 @@ public class EnglishGrounder extends Grounder
 		
 		if (context != null && !context.isEmpty() )
 		{
-			Collection<GroundingResults> groundingResults = new ArrayList<GroundingResults>();
-			groundingResults.add(results);
+//			Collection<GroundingResults> groundingResults = new ArrayList<GroundingResults>();
+//			groundingResults.add(results);
+//			
+//			Collection<GroundingResults> resRanked = this.doRanking(context, groundingResults);
+//			
+//			for (GroundingResults groundingResults2 : resRanked) {
+//				results = groundingResults2;
+//			}		
 			
-			Collection<GroundingResults> resRanked = this.doRanking(context, groundingResults);
+			final Set<String> contextSet = new HashSet<String>();
 			
-			for (GroundingResults groundingResults2 : resRanked) {
-				results = groundingResults2;
-			}		
+			for (String term:context) 
+			{
+				contextSet.add(term);
+			}
+			
+			final String contextString = StringTools.implode(contextSet.toArray(new String[0]),", ");
+			results.setEvaluatedGroundings(doRanking(results, contextString));
 		}
 		else
-			results.setEvaluatedGroundings(this.doRanking(results,label));
+			results.setEvaluatedGroundings(this.doRanking(results, label));
 		
 		for (GroundingRelevance result:results.getPossibleGroundings()) {
 			groundings.add(result.getGrounding().getURI());
@@ -523,46 +542,47 @@ public class EnglishGrounder extends Grounder
 	}
 	
 	protected List<GroundingRelevance> doRanking(final GroundingResults gr, final String contextSerialized) throws CorruptIndexException, LockObtainFailedException, IOException, ParseException {
-		Collection<GroundingRelevance> pgs = gr.getPossibleGroundings();
-		List<GroundingRelevance> gts = new ArrayList<GroundingRelevance>();
-		gts.addAll(pgs);
+//		Collection<GroundingRelevance> pgs = gr.getPossibleGroundings();
+		List<GroundingRelevance> pg = new ArrayList<GroundingRelevance>(gr.getPossibleGroundings());
+//		gts.addAll(pgs);
 		
 		final LuceneRanking rankingL = new LuceneRanking();
-		rankingL.createContext(gts, eu.dynalearn.st.mw.MWLanguage.EN);
-		rankingL.rankLucene(contextSerialized.toLowerCase(), gts);
-		rankingL.rankMedia(gts, eu.dynalearn.st.mw.MWLanguage.EN);
+		rankingL.createContext(pg, eu.dynalearn.st.mw.MWLanguage.EN);
+		rankingL.rankLucene(contextSerialized.toLowerCase(), pg);
+		rankingL.rankMedia(pg, eu.dynalearn.st.mw.MWLanguage.EN);
 		InhouseRanking rankingIH = new InhouseRanking();
-		rankingIH.rank(gr.getTerm(), gts, "en");
+		rankingIH.rank(gr.getTerm(), pg, "en");
 
-		Collections.sort(gts, new GroundingRelevanceComparator());
+		Collections.sort(pg, new GroundingRelevanceComparator());
 
-		return gts;
+		return pg;
 	}
 	
-	protected Collection<GroundingResults> doRanking(final List<String> context, Collection<GroundingResults> grSet) throws CorruptIndexException, IOException, ParseException {
-		// harvest context
-		final Set<String> contextSet = new HashSet<String>();
-		
-		for (String term:context) 
-		{
-			contextSet.add(term);
-		}
-		final String contextString = StringTools.implode(contextSet.toArray(new String[0]),", ");
-		
-		// rank every grounding proposal by its ranking w.r.t. context
-		for (GroundingResults gr:grSet) {
-			List<GroundingRelevance> pg = new ArrayList<GroundingRelevance>(gr.getPossibleGroundings());
-			final LuceneRanking rankingL = new LuceneRanking();
-			rankingL.createContext(pg, eu.dynalearn.st.mw.MWLanguage.EN);
-			rankingL.rankLucene(contextString.toLowerCase(), pg);
-			rankingL.rankMedia(pg, eu.dynalearn.st.mw.MWLanguage.EN);
-			final InhouseRanking rankingIH = new InhouseRanking();
-			rankingIH.rank(gr.getTerm(), pg, "en");
-			Collections.sort(pg, new GroundingRelevanceComparator());
-			gr.setEvaluatedGroundings(pg);
-		}
-		
-		return grSet;
-		
-	}
+//	protected List<GroundingRelevance> doRanking(final GroundingResults gr, final List<String> context) throws CorruptIndexException, IOException, ParseException {
+//		// harvest context
+//		final Set<String> contextSet = new HashSet<String>();
+//		
+//		for (String term:context) 
+//		{
+//			contextSet.add(term);
+//		}
+//		final String contextString = StringTools.implode(contextSet.toArray(new String[0]),", ");
+//		
+//		// rank every grounding proposal by its ranking w.r.t. context
+////		for (GroundingResults gr:grSet) {
+//			List<GroundingRelevance> pg = new ArrayList<GroundingRelevance>(gr.getPossibleGroundings());
+//			final LuceneRanking rankingL = new LuceneRanking();
+//			rankingL.createContext(pg, eu.dynalearn.st.mw.MWLanguage.EN);
+//			rankingL.rankLucene(contextString.toLowerCase(), pg);
+//			rankingL.rankMedia(pg, eu.dynalearn.st.mw.MWLanguage.EN);
+//			final InhouseRanking rankingIH = new InhouseRanking();
+//			rankingIH.rank(gr.getTerm(), pg, "en");
+//			
+//			Collections.sort(pg, new GroundingRelevanceComparator());
+////			gr.setEvaluatedGroundings(pg);
+////		}
+//		
+////		return grSet;
+//		return pg;
+//	}
 }

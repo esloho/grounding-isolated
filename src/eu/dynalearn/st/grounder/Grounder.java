@@ -1,13 +1,10 @@
 package eu.dynalearn.st.grounder;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
 import org.annolab.tt4j.TreeTaggerException;
 

@@ -12,8 +12,8 @@ import org.xeustechnologies.googleapi.spelling.SpellResponse;
 
 public class GoogleSpellingSuggestions implements SpellingSuggestions {
 
-	private String _query = "";
-	private String _output = "";
+//	private String _query = "";
+//	private String _output = "";
 	private Vector<String> _results = new Vector<String>();
 	private String lang = "en";
 

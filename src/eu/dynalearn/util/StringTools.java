@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
-import eu.dynalearn.model.GroundingTerm;
 import eu.dynalearn.st.grounder.GroundingRelevance;
 import eu.dynalearn.st.grounder.GroundingResults;
 
