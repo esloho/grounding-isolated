@@ -147,56 +147,6 @@ public class EnglishGrounder extends Grounder
 			return new ArrayList<GroundingTerm>();
 		}
 	}
-
-//	private List<GroundingTerm> searchingInLocalLanguageCache(SemanticRepository sr, String term) throws GrounderException
-//	{
-//		try 
-//		{
-//			String tablename = Configuration.CACHE_LANG_NAME + lang.getDbpediaCode();
-//			
-//			//Connection conn = ConnectionSingleton.getConnection();
-//			Connection conn = null;
-//			//Statement stat=null;
-//			java.sql.PreparedStatement stat=null;
-//			java.sql.ResultSet resQ=null;
-//			List<GroundingTerm> results = new ArrayList<GroundingTerm>();
-//			try {
-//				conn=sr.getConnection().getLabelConnection();
-//
-//				String query = "SELECT `label`, `uri`, MATCH (`label`) AGAINST (?) GTScore " +
-//				"FROM `"+ tablename + "` " +
-//				"WHERE MATCH (`label`) AGAINST (?) != 0 " +
-//				"ORDER BY GTScore DESC LIMIT 50";
-//				//stat = conn.createStatement();
-//				stat= conn.prepareStatement(query);
-//
-//				stat.setString(1, term);
-//				stat.setString(2, term);
-//
-//				//resQ = stat.executeQuery(query);
-//				resQ = stat.executeQuery();
-//
-//				while(resQ.next()) {			
-//					String uri = resQ.getString("uri");
-//					GroundingTerm dbPedia=new DBpedia();
-//					dbPedia.setURI(uri);
-//					results.add(dbPedia);
-//				}
-//
-//			}
-//			catch(Exception ex){
-//				System.out.println(ex.getMessage());
-//			}
-//			finally {
-//				if(resQ!=null) resQ.close();
-//				if(stat!=null) stat.close();
-//			}
-//			return results;
-//		}
-//		catch(SQLException e) {
-//			throw new GrounderException(e);
-//		}
-//	}
 	
 	/**
 	 * Add a sublist of Strings in a main list of Strings
@@ -248,7 +198,6 @@ public class EnglishGrounder extends Grounder
 	{
 		List<GroundingTerm> lsResult = new ArrayList<GroundingTerm>();
 		for (GroundingTerm aResult : listResults) {
-			//PossibleGrounding aResult = listResults.get(i);
 			final String description = aResult.getDescription();
 			final String label = aResult.getLabel();
 			
@@ -258,23 +207,7 @@ public class EnglishGrounder extends Grounder
 		}
 		return lsResult;
 	}
-	
-//	public List<DBPediaExtended> filterResults(Collection<DBPediaExtended> listResults, String word) 
-//	{
-//		List<DBPediaExtended> lsResult = new ArrayList<DBPediaExtended>();
-//		for (DBPediaExtended aResult : listResults) {
-//			//PossibleGrounding aResult = listResults.get(i);
-//			final String source = aResult.getSource();
-//			final String description = aResult.getDescription();
-//			final String label = aResult.getLabel();
-//			
-//			if (isValuable(label, description, source, word)) {
-//				lsResult.add(aResult);
-//			}
-//		}
-//		return lsResult;
-//	}
-	
+
 	/**
 	 * 
 	 * @param sr
@@ -291,15 +224,6 @@ public class EnglishGrounder extends Grounder
 	private GroundingResults process(GroundingResults results, String searchTerm, String lang) throws GrounderException {
 		String term = results.getTerm();
 
-//		// Lookup in DBpedia
-//		List<GroundingTerm> rl = searching(sr, term);
-//		//Get possible groundings of the original term (if there are no matches in the cache
-//		if (!cacheResults && rl.size() > 0) {
-//			GroundProcess.process(sr, rl, searchTerm, lang);
-//			for (GroundingTerm gr : rl)
-//				results.addPossibleGrounding(gr);
-//		}
-		
 		List <String> stems = getStems(term);
 		List <String> tocheck = new ArrayList<String>(stems);
 		results.setStems(stems);
@@ -309,14 +233,14 @@ public class EnglishGrounder extends Grounder
 		//use Yahoo service for checking spelling and getting possible groundings for each suggestion
 //		if (!results.hasStems()) 
 //		{
-			//String[] stems = results.getStems();
 			tocheck.add(term);
 //			List<String> suggestions = checkSpelling(tocheck);
 			List<String> suggestions = tocheck;
 			
 			for (String suggest : suggestions)
+			{
 				results.addSuggestion(suggest);
-//			}
+			}
 //		}	
 		
 		return results;
@@ -374,9 +298,6 @@ public class EnglishGrounder extends Grounder
 
 		groundCompoundWord(results, term);
 
-		//results.sortResultsByRelevance(term);
-		
-		
 		return results;
 	}
 	
@@ -387,7 +308,7 @@ public class EnglishGrounder extends Grounder
 	 * @return Term with grounding options.
 	 * @throws UnsupportedEncodingException
 	 */
-	public GroundingResults groundSuggestedTerms (String term) throws GrounderException {
+	private GroundingResults groundSuggestedTerms (String term) throws GrounderException {
 		term = super.normalize(term);
 		
 		//Include the original term in the results
@@ -395,8 +316,6 @@ public class EnglishGrounder extends Grounder
 		
 		//Possible groundings for suggestions for the original term
 		results = processSuggestions(results, term, lang);
-		
-		//results.sortResultsByRelevance(term);
 		
 		return results;
 	}
@@ -440,16 +359,7 @@ public class EnglishGrounder extends Grounder
 		GroundingResults results = groundTerm(label);
 		
 		if (context != null && !context.isEmpty() )
-		{
-//			Collection<GroundingResults> groundingResults = new ArrayList<GroundingResults>();
-//			groundingResults.add(results);
-			
-//			Collection<GroundingResults> resRanked = this.doRanking(context, groundingResults);
-			
-//			for (GroundingResults groundingResults2 : resRanked) {
-//				results = groundingResults2;
-//			}
-			
+		{			
 			final Set<String> contextSet = new HashSet<String>();
 			
 			for (String term:context) 
@@ -484,6 +394,30 @@ public class EnglishGrounder extends Grounder
 		List<String> groundings = new ArrayList<String>();
 		
 		GroundingResults results = groundTerm(term);
+		results.setEvaluatedGroundings(doRanking(results,term));
+		
+		for (GroundingRelevance result:results.getPossibleGroundings()) {
+			groundings.add(result.getGrounding().getURI());
+		}
+	
+		return groundings;
+	}
+	
+	/**
+	 * Returns the ranked list of groundings
+	 * @param term
+	 * @return
+	 * @throws GrounderException
+	 * @throws CorruptIndexException
+	 * @throws LockObtainFailedException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public List<String> getGroundingsWithSuggestions(String term) throws GrounderException, CorruptIndexException, LockObtainFailedException, IOException, ParseException {
+		
+		List<String> groundings = new ArrayList<String>();
+		
+		GroundingResults results = groundSuggestedTerms(term);
 		results.setEvaluatedGroundings(doRanking(results,term));
 		
 		for (GroundingRelevance result:results.getPossibleGroundings()) {

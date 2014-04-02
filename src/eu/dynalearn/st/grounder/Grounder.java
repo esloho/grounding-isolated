@@ -29,23 +29,24 @@ public abstract class Grounder implements GrounderInterface {
 	
 	// was made protected
 	// TODO: consider covering other methods from the interface!!!! 
-	protected final String normalize(String term) {
+	protected final String normalize(String term) 
+	{
 		return term.replace("_", " ");
 	}
 	
 	protected abstract Collection<GroundingTerm> searching(String term) throws GrounderException;
 	
-	protected Collection<GroundingTerm> searchGroundings(String term) throws GrounderException {
+	protected Collection<GroundingTerm> searchGroundings(String term) throws GrounderException 
+	{
 		Collection<GroundingTerm> groundings = new LinkedHashSet<GroundingTerm>();
 		
 		groundings.addAll(searching(term));
-
-//		groundings = GroundProcess.process(groundings);
 		
 		return groundings;
 	}
 	
-	protected void groundCompoundWord(GroundingResults grResults, String label) throws GrounderException {
+	protected void groundCompoundWord(GroundingResults grResults, String label) throws GrounderException 
+	{
 		try {				
 			String[] split = label.split(" ");
 			//Only sequences of Adjectives and Nouns are allowed
