@@ -32,7 +32,6 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.Version;
 import org.junit.Assert;
 
-import eu.dynalearn.st.config.Configuration;
 import eu.dynalearn.st.grounder.GroundingRelevance;
 import eu.dynalearn.st.mw.MWLanguage;
 import eu.dynalearn.util.StringTools;
@@ -83,14 +82,10 @@ public class LuceneRanking
 	
 	static 
 	{
-//		STOP_WORDS_SET_DE.addAll(StringTools.fileInCollection("data/stopwords/de.txt"));
-//		STOP_WORDS_SET_EN.addAll(StringTools.fileInCollection("data/stopwords/en.txt"));
-//		STOP_WORDS_SET_ES.addAll(StringTools.fileInCollection("data/stopwords/es.txt"));
-//		STOP_WORDS_SET_PT.addAll(StringTools.fileInCollection("data/stopwords/pt.txt"));
-		STOP_WORDS_SET_DE.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_DE));
-		STOP_WORDS_SET_EN.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_EN));
-		STOP_WORDS_SET_ES.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_ES));
-		STOP_WORDS_SET_PT.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_PT));
+//		STOP_WORDS_SET_DE.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_DE));
+//		STOP_WORDS_SET_EN.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_EN));
+//		STOP_WORDS_SET_ES.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_ES));
+//		STOP_WORDS_SET_PT.addAll(StringTools.fileInCollection(Configuration.STOP_WORDS_SET_PT));
 	}
 
 	// names of fields in the constructed documents

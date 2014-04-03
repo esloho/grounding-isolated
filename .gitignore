@@ -3,3 +3,4 @@
 .project
 .settings/
 bin/
+configuration_maria.properties

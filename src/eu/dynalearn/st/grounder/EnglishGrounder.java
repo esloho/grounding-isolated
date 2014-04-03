@@ -330,9 +330,9 @@ public class EnglishGrounder extends Grounder
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public String getFirstGrounding(String label)
+	public GroundingTerm getFirstGrounding(String label)
 	{
-		String grounding = null;
+		GroundingTerm grounding = null;
 		
 		GroundingResults results;
 		try
@@ -342,7 +342,9 @@ public class EnglishGrounder extends Grounder
 			results.setEvaluatedGroundings(doRanking(results,label));
 			
 			Iterator<GroundingRelevance> grs = results.getPossibleGroundings().iterator();
-			grounding = grs.next().getGrounding().getURI();
+			
+			if (grs.hasNext())
+				grounding = grs.next().getGrounding();
 		} 
 		catch (Exception e)
 		{
@@ -364,9 +366,9 @@ public class EnglishGrounder extends Grounder
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public String getFirstGrounding (String label, List<String> context)
+	public GroundingTerm getFirstGrounding (String label, List<String> context)
 	{		
-		String grounding = null;
+		GroundingTerm grounding = null;
 		
 		GroundingResults results;
 		try
@@ -389,7 +391,9 @@ public class EnglishGrounder extends Grounder
 				results.setEvaluatedGroundings(this.doRanking(results,label));
 			
 			Iterator<GroundingRelevance> grs = results.getPossibleGroundings().iterator();
-			grounding = grs.next().getGrounding().getURI();
+			
+			if (grs.hasNext())
+				grounding = grs.next().getGrounding();
 		} 
 		catch (Exception e)
 		{
@@ -410,9 +414,9 @@ public class EnglishGrounder extends Grounder
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public List<String> getGroundings(String term)
+	public List<GroundingTerm> getGroundings(String term)
 	{		
-		List<String> groundings = new ArrayList<String>();
+		List<GroundingTerm> groundings = new ArrayList<GroundingTerm>();
 		
 		GroundingResults results;
 		try
@@ -422,7 +426,7 @@ public class EnglishGrounder extends Grounder
 			results.setEvaluatedGroundings(doRanking(results,term));
 			
 			for (GroundingRelevance result:results.getPossibleGroundings()) {
-				groundings.add(result.getGrounding().getURI());
+				groundings.add(result.getGrounding());
 			}
 		} 
 		catch (Exception e)
@@ -443,9 +447,9 @@ public class EnglishGrounder extends Grounder
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public List<String> getGroundingsWithSuggestions(String term) 
+	public List<GroundingTerm> getGroundingsWithSuggestions(String term) 
 	{		
-		List<String> groundings = new ArrayList<String>();
+		List<GroundingTerm> groundings = new ArrayList<GroundingTerm>();
 		
 		GroundingResults results;
 		
@@ -456,7 +460,7 @@ public class EnglishGrounder extends Grounder
 			results.setEvaluatedGroundings(doRanking(results,term));
 			
 			for (GroundingRelevance result:results.getPossibleGroundings()) {
-				groundings.add(result.getGrounding().getURI());
+				groundings.add(result.getGrounding());
 			}
 		} 
 		catch (Exception e)
@@ -479,9 +483,9 @@ public class EnglishGrounder extends Grounder
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public List<String> getGroundings (String label, List<String> context)
+	public List<GroundingTerm> getGroundings (String label, List<String> context)
 	{		
-		List<String> groundings = new ArrayList<String>();
+		List<GroundingTerm> groundings = new ArrayList<GroundingTerm>();
 		
 		GroundingResults results;
 		
@@ -492,15 +496,6 @@ public class EnglishGrounder extends Grounder
 		
 			if (context != null && !context.isEmpty() )
 			{
-	//			Collection<GroundingResults> groundingResults = new ArrayList<GroundingResults>();
-	//			groundingResults.add(results);
-	//			
-	//			Collection<GroundingResults> resRanked = this.doRanking(context, groundingResults);
-	//			
-	//			for (GroundingResults groundingResults2 : resRanked) {
-	//				results = groundingResults2;
-	//			}		
-				
 				final Set<String> contextSet = new HashSet<String>();
 				
 				for (String term:context) 
@@ -515,7 +510,7 @@ public class EnglishGrounder extends Grounder
 				results.setEvaluatedGroundings(this.doRanking(results, label));
 			
 			for (GroundingRelevance result:results.getPossibleGroundings()) {
-				groundings.add(result.getGrounding().getURI());
+				groundings.add(result.getGrounding());
 			}
 		} 
 		catch (Exception e)
@@ -527,10 +522,9 @@ public class EnglishGrounder extends Grounder
 		return groundings;
 	}
 	
-	protected List<GroundingRelevance> doRanking(final GroundingResults gr, final String contextSerialized) throws CorruptIndexException, LockObtainFailedException, IOException, ParseException {
-//		Collection<GroundingRelevance> pgs = gr.getPossibleGroundings();
+	protected List<GroundingRelevance> doRanking(final GroundingResults gr, final String contextSerialized) throws CorruptIndexException, LockObtainFailedException, IOException, ParseException 
+	{
 		List<GroundingRelevance> pg = new ArrayList<GroundingRelevance>(gr.getPossibleGroundings());
-//		gts.addAll(pgs);
 		
 		final LuceneRanking rankingL = new LuceneRanking();
 		rankingL.createContext(pg, eu.dynalearn.st.mw.MWLanguage.EN);
@@ -543,32 +537,4 @@ public class EnglishGrounder extends Grounder
 
 		return pg;
 	}
-	
-//	protected List<GroundingRelevance> doRanking(final GroundingResults gr, final List<String> context) throws CorruptIndexException, IOException, ParseException {
-//		// harvest context
-//		final Set<String> contextSet = new HashSet<String>();
-//		
-//		for (String term:context) 
-//		{
-//			contextSet.add(term);
-//		}
-//		final String contextString = StringTools.implode(contextSet.toArray(new String[0]),", ");
-//		
-//		// rank every grounding proposal by its ranking w.r.t. context
-////		for (GroundingResults gr:grSet) {
-//			List<GroundingRelevance> pg = new ArrayList<GroundingRelevance>(gr.getPossibleGroundings());
-//			final LuceneRanking rankingL = new LuceneRanking();
-//			rankingL.createContext(pg, eu.dynalearn.st.mw.MWLanguage.EN);
-//			rankingL.rankLucene(contextString.toLowerCase(), pg);
-//			rankingL.rankMedia(pg, eu.dynalearn.st.mw.MWLanguage.EN);
-//			final InhouseRanking rankingIH = new InhouseRanking();
-//			rankingIH.rank(gr.getTerm(), pg, "en");
-//			
-//			Collections.sort(pg, new GroundingRelevanceComparator());
-////			gr.setEvaluatedGroundings(pg);
-////		}
-//		
-////		return grSet;
-//		return pg;
-//	}
 }

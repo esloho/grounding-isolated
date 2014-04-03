@@ -6,7 +6,7 @@ public enum MWLanguage {
 	public static MWLanguage getLanguageForString ( String s ) {
 		for (MWLanguage lang:values()) {			
 			if (lang.toString().compareToIgnoreCase(s)==0){
-				System.out.println(lang.toString()+" : "+s);
+//				System.out.println(lang.toString()+" : "+s);
 				return lang;
 			}
 		}

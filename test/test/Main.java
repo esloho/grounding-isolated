@@ -3,6 +3,7 @@ package test;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.dynalearn.model.GroundingTerm;
 import eu.dynalearn.st.grounder.EnglishGrounder;
 
 public class Main
@@ -14,11 +15,11 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
-		String term = "Water";
+		String term = "users";
 		
 		// Test grounding without context
-//		getFirstGrounding(term);
-		getGroundings(term);
+		getFirstGrounding(term);
+//		getGroundings(term);
 //		System.out.println("\nNow with suggestions");
 //		getGroundingsWithSuggestions(term);
 		
@@ -33,8 +34,16 @@ public class Main
 	{
 		try
 		{
-			String gr = grounder.getFirstGrounding(term);
-			System.out.println("The first grounding in the list is: "+gr);
+			GroundingTerm gr = grounder.getFirstGrounding(term);
+			
+			if (gr != null)
+			{
+				System.out.println("The first grounding in the list is: "+gr.getLabel()+": "+gr.getURI());
+			}
+			else
+			{
+				System.out.println("There is no grounding for such term");
+			}
 			
 		} 
 		catch (Exception e)
@@ -48,10 +57,10 @@ public class Main
 	{
 		try
 		{
-			List<String> grs = grounder.getGroundings(term);
+			List<GroundingTerm> grs = grounder.getGroundings(term);
 			
-			for (String gr:grs) {
-				System.out.println(gr);
+			for (GroundingTerm gr:grs) {
+				System.out.println(gr.getLabel()+": "+gr.getURI());
 			}
 			
 		} 
@@ -66,10 +75,10 @@ public class Main
 	{
 		try
 		{
-			List<String> grs = grounder.getGroundingsWithSuggestions(term);
+			List<GroundingTerm> grs = grounder.getGroundingsWithSuggestions(term);
 			
-			for (String gr:grs) {
-				System.out.println(gr);
+			for (GroundingTerm gr:grs) {
+				System.out.println(gr.getLabel()+": "+gr.getURI());
 			}
 			
 		} 
@@ -84,8 +93,16 @@ public class Main
 	{
 		try
 		{
-			String gr = grounder.getFirstGrounding(term, context);
-			System.out.println("The first contextualized grounding in the list is: "+gr);
+			GroundingTerm gr = grounder.getFirstGrounding(term, context);
+			
+			if (gr != null)
+			{
+				System.out.println("The first contextualized grounding in the list is: "+gr.getLabel()+": "+gr.getURI());
+			}
+			else
+			{
+				System.out.println("There is no grounding for such term");
+			}
 			
 		} 
 		catch (Exception e)
@@ -99,10 +116,10 @@ public class Main
 	{
 		try
 		{
-			List<String> grs = grounder.getGroundings(term, context);
+			List<GroundingTerm> grs = grounder.getGroundings(term, context);
 			
-			for (String gr:grs) {
-				System.out.println(gr);
+			for (GroundingTerm gr:grs) {
+				System.out.println(gr.getLabel()+": "+gr.getURI());
 			}
 			
 		} 

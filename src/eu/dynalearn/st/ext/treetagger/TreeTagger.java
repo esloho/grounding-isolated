@@ -133,11 +133,8 @@ public class TreeTagger {
     	
     	String model = null;
     	
-    	if (lang == MWLanguage.BG) model = Configuration.TREETAGGER_MODEL_BG;
     	if (lang == MWLanguage.EN) model = Configuration.TREETAGGER_MODEL_EN;
     	if (lang == MWLanguage.ES) model =  Configuration.TREETAGGER_MODEL_ES;
-    	if (lang == MWLanguage.DE) model =  Configuration.TREETAGGER_MODEL_GE;
-    	if (lang == MWLanguage.PT) model =  Configuration.TREETAGGER_MODEL_PT;
     	
     	//System.out.println(">>>>>> "+model+" <<<<<<");
     	return model;
