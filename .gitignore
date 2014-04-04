@@ -4,3 +4,4 @@
 .settings/
 bin/
 configuration_maria.properties
+MANIFEST.MF
