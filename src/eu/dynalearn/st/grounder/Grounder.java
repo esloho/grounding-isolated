@@ -33,14 +33,14 @@ public abstract class Grounder implements GrounderInterface {
 	{
 		return term.replace("_", " ");
 	}
+
+	protected abstract Collection<GroundingTerm> searching(GroundingResults results) throws GrounderException;
 	
-	protected abstract Collection<GroundingTerm> searching(String term) throws GrounderException;
-	
-	protected Collection<GroundingTerm> searchGroundings(String term) throws GrounderException 
+	protected Collection<GroundingTerm> searchGroundings(GroundingResults results) throws GrounderException 
 	{
 		Collection<GroundingTerm> groundings = new LinkedHashSet<GroundingTerm>();
 		
-		groundings.addAll(searching(term));
+		groundings.addAll(searching(results));
 		
 		return groundings;
 	}

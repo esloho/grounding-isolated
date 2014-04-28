@@ -15,7 +15,7 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
-		String term = "building";
+		String term = "water";
 		
 		// Test grounding without context
 //		getFirstGrounding(term);

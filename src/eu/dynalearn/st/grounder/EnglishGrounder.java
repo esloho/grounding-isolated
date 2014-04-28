@@ -129,17 +129,26 @@ public class EnglishGrounder extends Grounder
 	 * @return A list of grounding results.
 	 * @throws GrounderException 
 	 */
-	protected List<GroundingTerm> searching(String term) throws GrounderException 
+	protected List<GroundingTerm> searching(GroundingResults results) throws GrounderException 
 	{
 		try
 		{
-			ResultsParser rp = DBpedia.lookup(term);
-			List<GroundingTerm> rl = rp.getResults();
+			ResultsParser rp = DBpedia.lookup(results.getTerm());
+			List<GroundingTerm> resDBpedia = rp.getResults();
+			List<GroundingTerm> resFiltered = rp.getResults();
 			
-			if (rl.size() > _LIMITED_NUMBER)
-				rl = filterResults(rl, term);
+			if (resDBpedia.size() > _LIMITED_NUMBER)
+			{
+				resFiltered = filterResults(resDBpedia, results.getTerm());
+				
+				//If all results are filtered out, try with its stems (in case of plural, etc.)
+				if (resFiltered.isEmpty())
+				{
+					resFiltered = filterResults(resDBpedia, results.getStems());
+				}
+			}
 			
-			return rl;
+			return resFiltered;
 		}catch(Exception ex)
 		{
 			//DIC 20120413: When there is problems with "DBpedia look up service" a search in label_en table is performed
@@ -187,25 +196,62 @@ public class EnglishGrounder extends Grounder
 		return value;
 	}
 	
+	private boolean isValuable(String label, String description, Collection<String> stems) 
+	{
+		boolean value = false;
+		Iterator<String> it = stems.iterator();
+		
+		while (!value && it.hasNext())
+		{
+			if (StringUtils.containsIgnoreCase(label, it.next())) 
+			{
+				if (description.length() > 0) 
+					value = true;
+			}
+		}
+		
+		return value;
+	}
+	
 	
 	/**
 	 * Filter out the grounding results which do not contain any word in the list of input words
 	 * @param listResults list of grounding results
-	 * @param stems the input words
+	 * @param term the input word
 	 * @return list of grounding results after filtering
 	 */
 	private List<GroundingTerm> filterResults(Collection<GroundingTerm> listResults, String word) 
 	{
-		List<GroundingTerm> lsResult = new ArrayList<GroundingTerm>();
+		List<GroundingTerm> resFiltered = new ArrayList<GroundingTerm>();
 		for (GroundingTerm aResult : listResults) {
 			final String description = aResult.getDescription();
 			final String label = aResult.getLabel();
 			
 			if (isValuable(label, description, word)) {
-				lsResult.add(aResult);
+				resFiltered.add(aResult);
 			}
 		}
-		return lsResult;
+		return resFiltered;
+	}
+	
+	/**
+	 * Filter out the grounding results which do not contain any word in the list of input words
+	 * @param listResults list of grounding results
+	 * @param stems the stems of the input word
+	 * @return list of grounding results after filtering
+	 */
+	private List<GroundingTerm> filterResults(Collection<GroundingTerm> listResults, Collection<String> stems) 
+	{
+		List<GroundingTerm> resFiltered = new ArrayList<GroundingTerm>();
+		for (GroundingTerm aResult : listResults) {
+			final String description = aResult.getDescription();
+			final String label = aResult.getLabel();
+			
+			if (isValuable(label, description, stems)) {
+				resFiltered.add(aResult);
+			}
+		}
+		return resFiltered;
 	}
 
 	/**
@@ -287,14 +333,16 @@ public class EnglishGrounder extends Grounder
 		term = normalize(term);
 		
 		GroundingResults results = new GroundingResults(term);
+		
+		//Obtain stems and suggestions for the original term
+		results = process(results, term, lang);
 				
-		Collection<GroundingTerm> grTerms = super.searchGroundings(term);
+		Collection<GroundingTerm> grTerms = super.searchGroundings(results);
 		if (grTerms!=null)
 			for(GroundingTerm gt: grTerms)
 				results.addPossibleGrounding(gt);
 		
-		//Possible groundings for stems and suggestions for the original term
-		results = process(results, term, lang);
+		
 
 		groundCompoundWord(results, term);
 
