@@ -427,6 +427,7 @@ public class EnglishGrounder extends Grounder
 			
 			for (GroundingRelevance result:results.getPossibleGroundings()) {
 				groundings.add(result.getGrounding());
+				System.out.println(result.getGrounding().getLabel()+" :"+result.getGrounding().getURI()+" Rel.: "+result.getRelevance());
 			}
 		} 
 		catch (Exception e)

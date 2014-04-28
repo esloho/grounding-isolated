@@ -15,11 +15,11 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
-		String term = "users";
+		String term = "building";
 		
 		// Test grounding without context
-		getFirstGrounding(term);
-//		getGroundings(term);
+//		getFirstGrounding(term);
+		getGroundings(term);
 //		System.out.println("\nNow with suggestions");
 //		getGroundingsWithSuggestions(term);
 		
@@ -59,9 +59,9 @@ public class Main
 		{
 			List<GroundingTerm> grs = grounder.getGroundings(term);
 			
-			for (GroundingTerm gr:grs) {
-				System.out.println(gr.getLabel()+": "+gr.getURI());
-			}
+//			for (GroundingTerm gr:grs) {
+//				System.out.println(gr.getLabel()+": "+gr.getURI()+" relevance: ");
+//			}
 			
 		} 
 		catch (Exception e)

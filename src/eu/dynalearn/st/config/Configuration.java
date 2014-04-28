@@ -30,7 +30,7 @@ final public class Configuration
 	public static String DBPEDIA  = Configuration.getDBPEDIA();
 	public static String DBPEDIA_LOOKUP  = Configuration.getDBPEDIA_LOOKUP();
  
-	public static int LOOKUP_MAXHITS = Configuration.getLOOKUP_MAXHITS();
+//	public static int LOOKUP_MAXHITS = Configuration.getLOOKUP_MAXHITS();
 	
 //	public static String STOP_WORDS_SET_DE = Configuration.getSTOP_WORDS_SET_DE();
 //	public static String STOP_WORDS_SET_EN = Configuration.getSTOP_WORDS_SET_EN();
@@ -151,23 +151,23 @@ final public class Configuration
 		return props.getProperty("WN_PATH");
 	}
 
-	public static int getLOOKUP_MAXHITS()
-	{
-		Properties props = new Properties();
-		
-		try
-		{			
-			FileInputStream in = new FileInputStream(PROP_FILE);
-			props.load(in);
-			in.close();
-		}catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return Integer.parseInt(props.getProperty("LOOKUP_MAXHITS"));
-	}
+//	public static int getLOOKUP_MAXHITS()
+//	{
+//		Properties props = new Properties();
+//		
+//		try
+//		{			
+//			FileInputStream in = new FileInputStream(PROP_FILE);
+//			props.load(in);
+//			in.close();
+//		}catch (IOException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		return Integer.parseInt(props.getProperty("LOOKUP_MAXHITS"));
+//	}
 
 //	private static String getSTOP_WORDS_SET_PT() 
 //	{
